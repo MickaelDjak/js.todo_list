@@ -1,0 +1,9 @@
+.Counter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.Counter span {
+  margin-top: 5px;
+}

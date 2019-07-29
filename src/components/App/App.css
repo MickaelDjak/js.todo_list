@@ -1,0 +1,30 @@
+.App {
+  text-align: center;
+}
+
+.App > * {
+  margin-top: 10px;
+}
+
+.App-header {
+  background-color: #282c34;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  color: white;
+  padding-top: 40px;
+  padding-bottom: 5px;
+}
+
+.App-navigation {
+  display: flex;
+  flex-direction: row;
+}
+
+.App-navigation > * {
+  margin-right: 5px;
+}
+.App-navigation > *:last-child {
+  margin-right: 0;
+}

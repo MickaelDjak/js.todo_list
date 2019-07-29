@@ -1,0 +1,20 @@
+.TodoListItem {
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.TodoListItem button {
+  min-width: 40px;
+  margin-left: 5px;
+}
+
+.TodoListItem-text.impontent {
+  font-weight: 900;
+}
+
+.TodoListItem-text.done {
+  text-decoration: line-through;
+}
