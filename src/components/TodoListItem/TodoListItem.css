@@ -16,6 +16,10 @@
   width: 280px;
 }
 
+.TodoListItem-text.empty {
+  color: grey;
+}
+
 .TodoListItem-text.impontent {
   font-weight: 900;
 }

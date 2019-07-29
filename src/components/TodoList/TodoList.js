@@ -16,17 +16,21 @@ export default class TodoList extends Component {
     return (
       <div className="TodoList ">
         <div className="list-group">
-          {todoList.map(el => (
-            <TodoListItem
-              key={el.id}
-              {...el}
-              toggleDoneMarker={toggleDoneMarker}
-              toggleImpontentMarker={toggleImpontentMarker}
-              toggleEditMarker={toggleEditMarker}
-              dropTask={dropTask}
-              editTask={editTask}
-            />
-          ))}
+          {todoList.length ? (
+            todoList.map(el => (
+              <TodoListItem
+                key={el.id}
+                {...el}
+                toggleDoneMarker={toggleDoneMarker}
+                toggleImpontentMarker={toggleImpontentMarker}
+                toggleEditMarker={toggleEditMarker}
+                dropTask={dropTask}
+                editTask={editTask}
+              />
+            ))
+          ) : (
+            <p>There is no one task</p>
+          )}
         </div>
       </div>
     );

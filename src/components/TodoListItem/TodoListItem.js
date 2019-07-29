@@ -18,24 +18,29 @@ export default class TodoListItem extends Component {
           type="text"
           className="TodoListItem-text form-controll"
           onChange={this.setText}
+          placeholder="Write down task ... "
           value={text}
         />
       );
     } else {
-      let TodoListItemMarkers = "TodoListItem-text";
-      TodoListItemMarkers += impontent ? " impontent" : "";
-      TodoListItemMarkers += done ? " done" : "";
+      if (text.length) {
+        let TodoListItemMarkers = "TodoListItem-text";
+        TodoListItemMarkers += impontent ? " impontent" : "";
+        TodoListItemMarkers += done ? " done" : "";
 
-      return (
-        <span
-          className={TodoListItemMarkers}
-          onClick={() => {
-            toggleDoneMarker(id);
-          }}
-        >
-          {text}
-        </span>
-      );
+        return (
+          <span
+            className={TodoListItemMarkers}
+            onClick={() => {
+              toggleDoneMarker(id);
+            }}
+          >
+            {text}
+          </span>
+        );
+      } else {
+        return <span className="TodoListItem-text empty">Empty task text</span>;
+      }
     }
   };
 
@@ -70,7 +75,7 @@ export default class TodoListItem extends Component {
     return (
       <div className="TodoListItem list-group-item">
         {this.getText()}
-        <div className='button-group'>
+        <div className="button-group">
           {this.getButton()}
           <button
             type="button"
