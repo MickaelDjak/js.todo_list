@@ -11,10 +11,22 @@
   margin-left: 5px;
 }
 
+.TodoListItem-text {
+  overflow-wrap: break-word;
+  width: 280px;
+}
+
 .TodoListItem-text.impontent {
   font-weight: 900;
 }
 
 .TodoListItem-text.done {
   text-decoration: line-through;
+}
+
+input.TodoListItem-text {
+  border: none;
+  border-bottom: black 1px solid;
+  outline: none;
+  font-style: italic;
 }

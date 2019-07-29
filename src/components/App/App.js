@@ -29,7 +29,8 @@ export default class App extends Component {
       id: this.id++,
       text: text,
       impontent: false,
-      done: false
+      done: false,
+      edit: false
     };
   };
 
@@ -42,6 +43,21 @@ export default class App extends Component {
         todoList: [
           ...todoList.slice(0, idx),
           { ...previousTask, impontent: !previousTask.impontent },
+          ...todoList.slice(idx + 1)
+        ]
+      };
+    });
+  };
+
+  toggleEditMarker = id => {
+    const idx = this.state.todoList.findIndex(el => el.id === id);
+    const previousTask = this.state.todoList[idx];
+
+    this.setState(({ todoList }) => {
+      return {
+        todoList: [
+          ...todoList.slice(0, idx),
+          { ...previousTask, edit: !previousTask.edit },
           ...todoList.slice(idx + 1)
         ]
       };
@@ -67,6 +83,20 @@ export default class App extends Component {
       return {
         todoList: [...todoList, this.createTask(text)]
       };
+    });
+  };
+
+  editTask = (id, text) => {
+    const { todoList } = this.state;
+
+    const idx = todoList.findIndex(el => el.id === id);
+    const previousTask = todoList[idx];
+    this.setState({
+      todoList: [
+        ...todoList.slice(0, idx),
+        { ...previousTask, text: text },
+        ...todoList.slice(idx + 1)
+      ]
     });
   };
 
@@ -141,7 +171,9 @@ export default class App extends Component {
               todoList={showedList}
               toggleDoneMarker={this.toggleDoneMarker}
               toggleImpontentMarker={this.toggleImpontentMarker}
+              toggleEditMarker={this.toggleEditMarker}
               dropTask={this.dropTask}
+              editTask={this.editTask}
             />
           </div>
         </div>

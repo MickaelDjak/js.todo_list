@@ -11,13 +11,14 @@ export default class AddPanel extends Component {
   };
 
   addTask = event => {
+    event.preventDefault();
     this.props.addTask(this.state.value);
     this.setState({ value: "" });
   };
 
   render() {
     return (
-      <div className="AddPanel input-group">
+      <form className="AddPanel input-group" onSubmit={this.addTask}>
         <input
           type="text"
           className="form-control"
@@ -26,15 +27,11 @@ export default class AddPanel extends Component {
           onChange={this.inputNewTask}
         />
         <div className="input-group-append">
-          <button
-            type="button"
-            className="btn btn-outline-success"
-            onClick={this.addTask}
-          >
+          <button type="submit" className="btn btn-outline-success">
             Add
           </button>
         </div>
-      </div>
+      </form>
     );
   }
 }

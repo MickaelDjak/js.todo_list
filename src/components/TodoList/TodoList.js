@@ -8,7 +8,9 @@ export default class TodoList extends Component {
       todoList,
       toggleDoneMarker,
       toggleImpontentMarker,
-      dropTask
+      toggleEditMarker,
+      dropTask,
+      editTask
     } = this.props;
 
     return (
@@ -20,7 +22,9 @@ export default class TodoList extends Component {
               {...el}
               toggleDoneMarker={toggleDoneMarker}
               toggleImpontentMarker={toggleImpontentMarker}
+              toggleEditMarker={toggleEditMarker}
               dropTask={dropTask}
+              editTask={editTask}
             />
           ))}
         </div>
