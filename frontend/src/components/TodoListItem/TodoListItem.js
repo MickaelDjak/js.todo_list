@@ -2,15 +2,38 @@ import React, { Component } from "react";
 import "./TodoListItem.css";
 
 export default class TodoListItem extends Component {
-  setText = event => {
-    const text = event.target.value;
-    const { id, editTask } = this.props;
 
-    editTask(id, text);
+  constructor() {
+    super();
+    this.state = {
+      edit: false,
+      text: ''
+    }
+  }
+
+  toggleEditMarker = () => {
+    this.setState((prev, props) => {
+      if (prev.edit) {
+
+        if (prev.text !== props.text){
+          const { id, editTask } = this.props;
+          editTask(id, prev.text);
+        }
+
+        return { edit: false, text: '' };
+      }
+
+      return { edit: true, text: props.text };
+    })
+  };
+
+  setText = event => {
+    this.setState({ ...this.state, text: event.target.value })
   };
 
   getText = () => {
-    const { edit, id, text, impontent, done, toggleDoneMarker } = this.props;
+    const { id, text: incomeText, important, done, toggleDoneMarker } = this.props;
+    const { edit, text } = this.state;
 
     if (edit) {
       return (
@@ -23,9 +46,9 @@ export default class TodoListItem extends Component {
         />
       );
     } else {
-      if (text.length) {
+      if (incomeText.length) {
         let TodoListItemMarkers = "TodoListItem-text";
-        TodoListItemMarkers += impontent ? " impontent" : "";
+        TodoListItemMarkers += important ? " important" : "";
         TodoListItemMarkers += done ? " done" : "";
 
         return (
@@ -35,7 +58,7 @@ export default class TodoListItem extends Component {
               toggleDoneMarker(id);
             }}
           >
-            {text}
+            {incomeText}
           </span>
         );
       } else {
@@ -45,13 +68,13 @@ export default class TodoListItem extends Component {
   };
 
   getButton = () => {
-    const { edit, id, toggleEditMarker } = this.props;
+    const { edit } = this.state;
     if (edit) {
       return (
         <button
           type="button"
           className="btn btn-success "
-          onClick={() => toggleEditMarker(id)}
+          onClick={() => this.toggleEditMarker()}
         >
           <i className="fa  fa-check" />
         </button>
@@ -61,7 +84,7 @@ export default class TodoListItem extends Component {
         <button
           type="button"
           className="btn btn-warning "
-          onClick={() => toggleEditMarker(id)}
+          onClick={() => this.toggleEditMarker()}
         >
           <i className="fa fa-pencil" />
         </button>
@@ -70,7 +93,7 @@ export default class TodoListItem extends Component {
   };
 
   render() {
-    const { id, toggleImpontentMarker, dropTask } = this.props;
+    const { id, toggleImportantMarker, archiveDashboard } = this.props;
 
     return (
       <div className="TodoListItem list-group-item">
@@ -79,17 +102,17 @@ export default class TodoListItem extends Component {
           {this.getButton()}
           <button
             type="button"
-            className="btn btn-primary exclamation"
-            onClick={() => toggleImpontentMarker(id)}
+            className="btn btn-primary"
+            onClick={() => toggleImportantMarker(id)}
           >
             <i className="fa fa-exclamation" />
           </button>
           <button
             type="button"
             className="btn btn-danger deleting"
-            onClick={() => dropTask(id)}
+            onClick={() => archiveDashboard(id)}
           >
-            <i className="fa fa-trash" />
+            <i className="fa fa-archive" />
           </button>
         </div>
       </div>

@@ -7,9 +7,9 @@ export default class TodoList extends Component {
     const {
       todoList,
       toggleDoneMarker,
-      toggleImpontentMarker,
+      toggleImportantMarker,
       toggleEditMarker,
-      dropTask,
+      archiveDashboard,
       editTask
     } = this.props;
 
@@ -22,9 +22,9 @@ export default class TodoList extends Component {
                 key={el.id}
                 {...el}
                 toggleDoneMarker={toggleDoneMarker}
-                toggleImpontentMarker={toggleImpontentMarker}
+                toggleImportantMarker={toggleImportantMarker}
                 toggleEditMarker={toggleEditMarker}
-                dropTask={dropTask}
+                archiveDashboard={archiveDashboard}
                 editTask={editTask}
               />
             ))

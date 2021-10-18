@@ -6,35 +6,84 @@ import Filter from "./../Filter";
 import AddPanel from "./../AddPanel";
 import TodoList from "./../TodoList";
 import "./App.css";
+import {ApiService} from "../../services/apiService";
+import {WebSocketService} from "../../services/webSocketService";
 
 export default class App extends Component {
   id = 10;
+  socket;
 
   constructor() {
     super();
+    this.apiSerivce = new ApiService();
+    this.webSocket = new WebSocketService();
 
     this.state = {
-      todoList: [
-        this.createTask("Drink coffee"),
-        this.createTask("Make my first react app"),
-        this.createTask("Go to sleap")
-      ],
+      todoList: [],
       query: "",
       filter: "all" // {all, done, active}
     };
   }
 
-  createTask = text => {
+  async componentDidMount() {
+    await this.fetchDashboard();
+    this.webSocketRegistration();
+  }
+
+  webSocketRegistration(){
+    this.webSocket.listenOn("DashboardCreatedEvent", (event) => {
+      this.setState({
+        ...this.state,
+        todoList: [...this.state.todoList, this.mapDashboard(event.id, event.name)]
+      })
+    });
+
+    this.webSocket.listenOn("DashboardRenamedEvent", (event) => {
+      const { todoList } = this.state;
+      const idx = todoList.findIndex(el => el.id === event.id);
+      const previousTask = todoList[idx];
+      this.setState({
+        todoList: [
+          ...todoList.slice(0, idx),
+          { ...previousTask, text: event.name },
+          ...todoList.slice(idx + 1)
+        ]
+      });
+    });
+
+    this.webSocket.listenOn("DashboardArchivedEvent", (event) => {
+      console.log(event);
+      const idx = this.state.todoList.findIndex(el => el.id === event.id);
+      if(idx === -1) {
+        return
+      }
+      this.setState(({ todoList }) => {
+        return {
+          todoList: [...todoList.slice(0, idx), ...todoList.slice(idx + 1)]
+        };
+      });
+    });
+  }
+
+  async fetchDashboard(){
+    const dashboards = await this.apiSerivce.getDashboard();
+    const todoList = dashboards.map(item => {
+      return this.mapDashboard(item._id, item.name);
+    })
+    this.setState({ ...this.state, todoList});
+  }
+
+  mapDashboard = (id, name) => {
     return {
-      id: this.id++,
-      text: text,
-      impontent: false,
+      id,
+      text: name,
+      important: false,
       done: false,
       edit: false
     };
   };
 
-  toggleImpontentMarker = id => {
+  toggleImportantMarker = id => {
     const idx = this.state.todoList.findIndex(el => el.id === id);
     const previousTask = this.state.todoList[idx];
 
@@ -42,7 +91,7 @@ export default class App extends Component {
       return {
         todoList: [
           ...todoList.slice(0, idx),
-          { ...previousTask, impontent: !previousTask.impontent },
+          { ...previousTask, important: !previousTask.important },
           ...todoList.slice(idx + 1)
         ]
       };
@@ -78,35 +127,16 @@ export default class App extends Component {
     });
   };
 
-  addTask = text => {
-    this.setState(({ todoList }) => {
-      return {
-        todoList: [...todoList, this.createTask(text)]
-      };
-    });
+  createDashboard = name => {
+    this.webSocket.emit('dashboard/create', { name });
   };
 
-  editTask = (id, text) => {
-    const { todoList } = this.state;
-
-    const idx = todoList.findIndex(el => el.id === id);
-    const previousTask = todoList[idx];
-    this.setState({
-      todoList: [
-        ...todoList.slice(0, idx),
-        { ...previousTask, text: text },
-        ...todoList.slice(idx + 1)
-      ]
-    });
+  editDashboard = (id, name) => {
+    this.webSocket.emit('dashboard/rename', { id, name });
   };
 
-  dropTask = id => {
-    const idx = this.state.todoList.findIndex(el => el.id === id);
-    this.setState(({ todoList }) => {
-      return {
-        todoList: [...todoList.slice(0, idx), ...todoList.slice(idx + 1)]
-      };
-    });
+  archiveDashboard = id => {
+    this.webSocket.emit('dashboard/archive', { id });
   };
 
   setQuery = query => {
@@ -146,34 +176,34 @@ export default class App extends Component {
     return (
       <div className="App container">
         <div className="row justify-content-center ">
-          <div className="col-6 App-header">
+          <div className="col-8 App-header">
             <Header />
             <Counter todoList={showedList} />
           </div>
         </div>
 
         <div className="row justify-content-center ">
-          <div className="col-6  App-navigation">
+          <div className="col-8  App-navigation">
             <SearchPanel setQuery={this.setQuery} />
             <Filter setFilter={this.setFilter} filter={filter} />
           </div>
         </div>
 
         <div className="row justify-content-center ">
-          <div className="col-6">
-            <AddPanel addTask={this.addTask} />
+          <div className="col-8">
+            <AddPanel addTask={this.createDashboard} />
           </div>
         </div>
 
         <div className="row justify-content-center">
-          <div className="col-6">
+          <div className="col-8">
             <TodoList
               todoList={showedList}
               toggleDoneMarker={this.toggleDoneMarker}
-              toggleImpontentMarker={this.toggleImpontentMarker}
+              toggleImportantMarker={this.toggleImportantMarker}
               toggleEditMarker={this.toggleEditMarker}
-              dropTask={this.dropTask}
-              editTask={this.editTask}
+              archiveDashboard={this.archiveDashboard}
+              editTask={this.editDashboard}
             />
           </div>
         </div>
